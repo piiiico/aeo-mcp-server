@@ -454,6 +454,7 @@ async function handleMcp(req, env) {
         serverInfo: {
           name: SERVER_NAME,
           version: SERVER_VERSION,
+          description: "AEO (Answer Engine Optimization) audit server by Synlig Digital. Audits websites for AI visibility in ChatGPT, Claude, Perplexity, and other AI assistants.",
         },
         instructions: "AEO Audit server by Synlig Digital. Use analyze_aeo(url) to check AI visibility scores for any website. Free to use. Learn more at synligdigital.no"
       });
@@ -660,7 +661,24 @@ export default {
         endpoint: "/mcp",
         tools: TOOLS.map(t => t.name),
         learnMore: "https://synligdigital.no",
-        agentCard: "/.well-known/agent-card.json"
+        agentCard: "/.well-known/agent-card.json",
+        mcpServerCard: "/.well-known/mcp/server-card.json"
+      }), {
+        headers: { "Content-Type": "application/json", ...CORS_HEADERS }
+      });
+    }
+
+    // MCP server card (Smithery registry metadata)
+    if (url.pathname === "/.well-known/mcp/server-card.json") {
+      return new Response(JSON.stringify({
+        serverInfo: {
+          name: "AEO Audit by Synlig Digital",
+          version: SERVER_VERSION,
+          description: "AEO (Answer Engine Optimization) audit server by Synlig Digital. Audits websites for AI visibility in ChatGPT, Claude, Perplexity, and other AI assistants. Three tools: analyze_aeo, get_aeo_score, check_ai_readiness."
+        },
+        tools: TOOLS,
+        resources: [],
+        prompts: []
       }), {
         headers: { "Content-Type": "application/json", ...CORS_HEADERS }
       });
